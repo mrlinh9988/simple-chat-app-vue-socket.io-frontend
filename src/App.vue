@@ -18,7 +18,9 @@ export default {
     return {
       env: process.env.ALO,
       username: '',
-      socket: io(process.env.NODE_ENV !== 'production' ? 'http://localhost:3000' : 'https://linh.mrlinh.xyz/api'),
+      socket: io(
+        process.env.NODE_ENV !== 'production' ? 'http://localhost:3000' : 'https://linh.hoclaptrinhonline.xyz/api',
+      ),
       messages: [],
       users: [],
     };
