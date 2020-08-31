@@ -10,14 +10,17 @@
 </template>
 
 <script>
-import io from "socket.io-client";
-import ChatRoom from "@/components/ChatRoom.vue";
+import io from 'socket.io-client';
+import ChatRoom from '@/components/ChatRoom.vue';
 
 export default {
   data() {
     return {
-      username: "",
-      socket: io("http://localhost:3000"),
+      env: process.env.ALO,
+      username: '',
+      socket: io(
+        process.env.NODE_ENV !== 'production' ? 'http://localhost:3000' : 'https://linh.hoclaptrinhonline.xyz/api',
+      ),
       messages: [],
       users: [],
     };
@@ -25,37 +28,37 @@ export default {
   components: { ChatRoom },
   methods: {
     joinServer() {
-      this.socket.on("loggedIn", (data) => {
+      this.socket.on('loggedIn', (data) => {
         this.messages = data.messages;
         this.users = data.users;
-        this.socket.emit("newUser", this.username);
+        this.socket.emit('newUser', this.username);
       });
 
       this.listen();
     },
     listen() {
-      this.socket.on("userOnline", (user) => {
+      this.socket.on('userOnline', (user) => {
         this.users.push(user);
       });
 
-      this.socket.on("userLeft", (user) => {
+      this.socket.on('userLeft', (user) => {
         this.users.splice(this.users.indexOf(user), 1);
       });
 
-      this.socket.on("msg", (message) => {
+      this.socket.on('msg', (message) => {
         this.messages.push(message);
       });
     },
     sendMessage(message) {
-      console.log(message);
-      this.socket.emit("msg", message);
+      console.log('env: ', this.env);
+      this.socket.emit('msg', message);
     },
   },
   mounted() {
-    this.username = prompt("What is your username?", "AnonymousS");
+    this.username = prompt('What is your username?', 'Anonymous');
 
     if (!this.username) {
-      this.username = "Anonymous";
+      this.username = 'Anonymous';
     }
 
     this.joinServer();
@@ -65,7 +68,7 @@ export default {
 
 <style lang="scss">
 body {
-  font-family: "Avenir", Arial, Helvetica, sans-serif;
+  font-family: 'Avenir', Arial, Helvetica, sans-serif;
   color: #2c3e50;
   margin: 0;
   padding: 0;
